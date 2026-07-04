@@ -168,12 +168,26 @@ def run_cutlist_production(
         )
         manifest.append("stage.complete", stage="finish", report=finish_report)
 
+        # 成本快照(OpenMontage checkpoint cost-snapshot 思想):聚合工作台 gen_results 的 tokens→估算元
+        cost = None
+        gen_results = cutlist_path.parent / "gen_results.json"
+        if gen_results.exists():
+            try:
+                gen = json.loads(gen_results.read_text(encoding="utf-8"))
+                tokens = sum(r.get("tokens") or 0 for r in gen.get("results", []))
+                if tokens:
+                    cost = {"generation_tokens": tokens, "generation_cny_est": round(tokens * 0.023 / 1000, 2),
+                            "note": "0.023元/千tokens(Seedance mini);复用段/探针不在本文件则未计"}
+            except (ValueError, OSError):
+                pass
+
         production_report = {
             "output": str(output_path),
             "base": str(base_path),
             "cutlist": str(cutlist_path),
             "bgm": str(options.bgm_path.resolve()) if options.bgm_path else None,
             "manifest": str(manifest.path),
+            "cost": cost,
             "finish_report": finish_report,
         }
         report_path = output_path.with_suffix(".production-report.json")
