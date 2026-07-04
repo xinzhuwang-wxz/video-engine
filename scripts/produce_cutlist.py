@@ -26,6 +26,7 @@ def main() -> int:
     parser.add_argument("--manifest", default=None, help="manifest.jsonl output path")
     parser.add_argument("--no-beat-align", action="store_true", help="skip beat alignment even when BGM is provided")
     parser.add_argument("--resume", action="store_true", help="断点续跑:base已存在且新于剪单则跳过基础渲染")
+    parser.add_argument("--no-promise", action="store_true", help="跳过交付承诺门(分镜↔剪单对账)")
     parser.add_argument("--no-probe", action="store_true", help="跳过素材深校验门")
     parser.add_argument("--beat-tolerance", type=float, default=0.15, help="beat snap tolerance in seconds")
     parser.add_argument("--no-burn-subtitles", action="store_true", help="skip hard subtitle overlay")
@@ -46,6 +47,7 @@ def main() -> int:
         beat_tolerance=args.beat_tolerance,
         resume=args.resume,
         probe_assets=not args.no_probe,
+        promise_gate=not args.no_promise,
         burn_subtitles=not args.no_burn_subtitles,
         soft_glow=not args.no_soft_glow,
         beat_flash=not args.no_beat_flash,

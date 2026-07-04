@@ -104,3 +104,22 @@ class BuildFilterTests(unittest.TestCase):
         out = _build_filter(one, [], get_profile("douyin_vertical"), 2.0, subtitle_y=1400,
                             soft_glow=False, beat_flash=True, has_audio=True)
         self.assertNotIn("drawbox", out)  # 单段无切点,不应有闪白
+
+
+class PromiseCheckTests(unittest.TestCase):
+    def test_promise_catches_missing_segment_and_subtitle(self) -> None:
+        import importlib.util, pathlib
+        spec = importlib.util.spec_from_file_location(
+            "promise_check", pathlib.Path(__file__).resolve().parents[1] / "scripts/promise_check.py")
+        pc = importlib.util.module_from_spec(spec); spec.loader.exec_module(pc)
+        sb = {"total_duration": 4, "segments": [
+            {"seq": 1, "duration": 2, "subtitle": "你好"}, {"seq": 2, "duration": 2}]}
+        cl = {"segments": [{"seq": 1, "main": {"file": "a.mp4", "in": 0, "out": 2}, "subtitle": None}]}
+        errs, _ = pc.check(sb, cl)
+        self.assertTrue(any("缺失" in e for e in errs))
+        self.assertTrue(any("字幕" in e for e in errs))
+        good = {"segments": [
+            {"seq": 1, "main": {"file": "a.mp4", "in": 0, "out": 2}, "subtitle": "你好"},
+            {"seq": 2, "main": {"file": "b.mp4", "in": 1, "out": 3}}]}
+        errs2, _ = pc.check(sb, good)
+        self.assertEqual(errs2, [])

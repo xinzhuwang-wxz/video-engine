@@ -39,6 +39,7 @@ class ProductionOptions:
     beat_tolerance: float = 0.15
     resume: bool = False          # 断点续跑:base 已存在且新于剪单则跳过基础渲染
     probe_assets: bool = True     # 预渲染门:ffprobe 深校验素材
+    promise_gate: bool = True     # 交付承诺门:同目录有 storyboard.json 则渲染前对账
     burn_subtitles: bool = True
     soft_glow: bool = True
     beat_flash: bool = True
@@ -139,6 +140,13 @@ def run_cutlist_production(
             manifest.append("stage.start", stage="render_base", cmd=render_cmd, output=base_path)
             render_record = command_runner(render_cmd, REPO_ROOT)
             manifest.append("stage.complete", stage="render_base", stdout=render_record.stdout, stderr=render_record.stderr, output=base_path)
+
+        storyboard_path = cutlist_path.parent / "storyboard.json"
+        if options.promise_gate and storyboard_path.exists():
+            promise_cmd = _python_cmd("promise_check.py", str(storyboard_path), str(cutlist_path))
+            manifest.append("stage.start", stage="promise_gate", cmd=promise_cmd)
+            promise_record = command_runner(promise_cmd, REPO_ROOT)
+            manifest.append("stage.complete", stage="promise_gate", stdout=promise_record.stdout, stderr=promise_record.stderr)
 
         cutlist = load_cutlist(cutlist_path)
         duration = options.target_duration if options.target_duration is not None else timeline_duration(timeline_from_cutlist(cutlist))
