@@ -1,5 +1,9 @@
 # video-engine · AI 驱动的视频剪辑层
 
+中文 | **[English](README_EN.md)**
+
+<p align="center"><img src="assets/demo.gif" width="240" alt="15s 唯美卡点 demo — 分镜/previz/剪辑全部 agent 完成"></p>
+
 > **架构(2026-07-04 定):成熟基座 + 二次开发。**
 > 基座 = [VectCutAPI](https://github.com/sun-guannan/VectCutAPI)(原名 CapCutAPI,2039★):剪辑执行引擎
 > (362转场/468滤镜/关键帧/蒙版/音轨,HTTP :9001 + MCP,官方 vectcut-api 技能已装,云预览前端 vectcut.com)。

@@ -1,7 +1,7 @@
 ---
 name: video-editing
 description: agent 主剪:把「AI参考片 + 实拍分段素材」剪成成片——用分镜先验 + ffprobe/抽帧分析算出剪单(cutlist,每段入出点+理由),ffmpeg 低清渲染后 agent 抽帧回看自审(≤3轮迭代改剪单),直出成片到 03-成片/;同时物化一份剪映双轨草稿(实拍/AI参考画中画/字幕)作为人的观察与介入窗口——人不介入也能出片,人只做发布前确认。字幕加不加由 agent 自主决定。支持 AI/实拍混剪。Use when 用户说『按AI示例剪实拍 / 帮我剪成片 / 拼草稿 / 出剪单 / previz拍完了帮我剪』,或给了一组按 {SKU}-{排期编号}-S{n}_{AI|实拍}.mp4 命名的分段素材要成片时。本技能不生成AI视频(video-previz 的事)、绝不自动发布。
-license: MIT
+license: Apache-2.0
 ---
 > **路径约定**:`$VE` = 本插件根目录(含 `AGENT.md`/`cutlist.schema.json` 的那层)。独立部署时 `VE=仓库根`;作为子目录挂载时 `VE=<挂载路径>`。
 

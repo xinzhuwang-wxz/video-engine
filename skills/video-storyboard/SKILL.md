@@ -1,7 +1,7 @@
 ---
 name: video-storyboard
 description: 把「选题/文案主旨 + 产品资料 + 目标时长」变成可拍摄的专业分镜脚本——每段含 意图/景别/画面/运镜/台词/字幕/音效/时长/首帧建议/previz提示词,双格式输出:人读的分镜表(markdown) + 机器契约 JSON(可直喂 video-previz 生成示例视频)。品牌无关、内容类型通用(ootd/工艺科普/对照解说/口播/剧情/开箱),平台节奏可调(默认小红书 15-45s)。替代旧 qiaohe-video-script(品牌绑定版)。Use when 用户说『写分镜 / 拍摄脚本 / 脚本分镜 / 这条笔记怎么拍 / 把文案变成分镜 / 出previz前的脚本』,或排期笔记进入待拍前需要脚本时。本技能不生成视频(video-previz 的事)、不剪辑(video-editing 的事)、不碰飞书。
-license: MIT
+license: Apache-2.0
 ---
 > **路径约定**:`$VE` = 本插件根目录(含 `AGENT.md`/`cutlist.schema.json` 的那层)。独立部署时 `VE=仓库根`;作为子目录挂载时 `VE=<挂载路径>`。
 

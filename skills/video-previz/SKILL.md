@@ -1,7 +1,7 @@
 ---
 name: video-previz
 description: 把分镜脚本变成逐段 AI 示例视频(previz/动态分镜)——每段用该 SKU 的实拍图当首帧、分镜描述当提示词,调视频生成模型(默认 Seedance,可换)产出拍摄参考片,按 {SKU}-{排期编号}-S{n}_AI.mp4 落进素材库。拍摄的人照着示例逐段拍,拍完交给 video-editing 技能剪。Use when 用户说『给这条笔记生成示例视频 / 生成previz / 出动态分镜 / 分镜转视频 / 拍摄参考片』,或分镜脚本已定、准备安排拍摄时。本技能不剪辑(video-editing 的事)、不写飞书、不自动发布。
-license: MIT
+license: Apache-2.0
 ---
 > **路径约定**:`$VE` = 本插件根目录(含 `AGENT.md`/`cutlist.schema.json` 的那层)。独立部署时 `VE=仓库根`;作为子目录挂载时 `VE=<挂载路径>`。
 
