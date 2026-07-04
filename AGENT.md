@@ -53,7 +53,10 @@ git clone https://github.com/xinzhuwang-wxz/video-engine.git && cd video-engine 
 
 `make doctor` 环境体检(开工前) · `make smoke` 回归(改动后必跑) · `make test` 单元测试 ·
 `make server` 起引擎 · `make produce CUTLIST=… OUT=… BGM=…` 一键出片 ·
-`python3 scripts/status.py <工作台目录>` 接手任何笔记先跑这个(有什么/缺什么/下一步/停滞检测)。
+`python3 scripts/status.py <工作台目录>` 接手任何笔记先跑这个(有什么/缺什么/下一步/花费/停滞)。
+`make demo` 零key演示全产线(~20秒)。
+
+**四道质量门**(渲染路径上自动执行,均可显式关闭):素材深校验(`--probe`)→交付承诺门(分镜↔剪单对账,`promise_check.py`)→生成前同质化检测(分镜校验器内)→自审回环(SKILL步骤4)。
 
 ## 回归
 
