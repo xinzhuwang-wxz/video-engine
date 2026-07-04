@@ -1,0 +1,6 @@
+# 基座由 setup.sh 克隆(sun-guannan/VectCutAPI)+ 打 patches/,不入库
+vendor/
+.env
+*.pyc
+__pycache__/
+.venv/

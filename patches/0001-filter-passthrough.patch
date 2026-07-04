@@ -1,0 +1,61 @@
+diff --git a/add_video_track.py b/add_video_track.py
+index 274f617..698b466 100644
+--- a/add_video_track.py
++++ b/add_video_track.py
+@@ -26,6 +26,8 @@ def add_video_track(
+     duration: Optional[float] = None,  # Added duration parameter
+     transition: Optional[str] = None,  # Transition type
+     transition_duration: Optional[float] = 0.5,  # Transition duration (seconds)
++    filter_type: Optional[str] = None,  # [本地补丁] 剪映滤镜名(Filter_type 枚举)
++    filter_intensity: float = 100.0,  # [本地补丁] 滤镜强度 0-100
+     # Mask related parameters
+     mask_type: Optional[str] = None,  # Mask type
+     mask_center_x: float = 0.5,  # Mask center X coordinate (0-1)
+@@ -159,6 +161,14 @@ def add_video_track(
+         volume=volume
+     )
+     
++    # [本地补丁] Add filter (剪映滤镜,如 清透/自然/暖晨;intensity 0-100)
++    if filter_type:
++        try:
++            _enum = getattr(draft, "CapCut_Filter_type", draft.Filter_type) if IS_CAPCUT_ENV else draft.Filter_type
++            video_segment.add_filter(getattr(_enum, filter_type), intensity=filter_intensity)
++        except AttributeError:
++            raise ValueError(f"Unsupported filter type: {filter_type}")
++
+     # Add transition effect
+     if transition:
+         try:
+diff --git a/capcut_server.py b/capcut_server.py
+index f679276..b6fb8ce 100644
+--- a/capcut_server.py
++++ b/capcut_server.py
+@@ -58,6 +58,8 @@ def add_video():
+     duration = data.get('duration')  # New duration parameter
+     transition = data.get('transition')  # New transition type parameter
+     transition_duration = data.get('transition_duration', 0.5)  # New transition duration parameter, default 0.5 seconds
++    filter_type = data.get('filter_type')  # [本地补丁] 剪映滤镜名
++    filter_intensity = data.get('filter_intensity', 100.0)  # [本地补丁] 滤镜强度0-100
+     volume = data.get('volume', 1.0)  # New volume parameter, default 1.0 
+     
+     # Get mask related parameters
+@@ -105,6 +107,8 @@ def add_video():
+             duration=duration,
+             transition=transition,  # Pass transition type parameter
+             transition_duration=transition_duration,  # Pass transition duration parameter
++            filter_type=filter_type,  # [本地补丁] 滤镜透传
++            filter_intensity=filter_intensity,  # [本地补丁]
+             volume=volume,  # Pass volume parameter
+             # Pass mask related parameters
+             mask_type=mask_type,
+@@ -566,7 +570,9 @@ def add_image():
+             combo_animation=combo_animation,  # Pass combo animation parameter
+             combo_animation_duration=combo_animation_duration,  # Pass combo animation duration
+             transition=transition,  # Pass transition type parameter
+-            transition_duration=transition_duration,  # Pass transition duration parameter (seconds)
++            transition_duration=transition_duration,  # Pass transition duration parameter
++            filter_type=filter_type,  # [本地补丁] 滤镜透传
++            filter_intensity=filter_intensity,  # [本地补丁] (seconds)
+             # Pass mask related parameters
+             mask_type=mask_type,
+             mask_center_x=mask_center_x,
