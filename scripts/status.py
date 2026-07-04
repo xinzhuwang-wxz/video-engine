@@ -40,6 +40,12 @@ def derive(wb: Path) -> dict:
     previews = sorted(wb.glob("preview*.mp4")) + sorted(wb.glob("previz*.mp4"))
     finals = list(final_dir.glob(f"*{note}*.mp4")) if final_dir.exists() else []
     manifest_lines = (wb / "manifest.jsonl").read_text(errors="replace").count("\n") if (wb / "manifest.jsonl").exists() else 0
+    cost = None
+    gen = _safe_json(wb / "gen_results.json")
+    if gen and isinstance(gen.get("results"), list):
+        tokens = sum(r.get("tokens") or 0 for r in gen["results"])
+        if tokens:
+            cost = round(tokens * 0.023 / 1000, 1)
 
     # 下一步推导(存在即状态)
     if not storyboard:
@@ -72,7 +78,7 @@ def derive(wb: Path) -> dict:
             "storyboard": bool(storyboard), "segments_planned": seg_total,
             "ai_clips": ai_n, "raw_clips": raw_n, "cutlist": bool(cutlist),
             "previews": len(previews), "finals": len(finals), "manifest_events": manifest_lines,
-            "next": nxt, "stall": stall}
+            "gen_cost_cny": cost, "next": nxt, "stall": stall}
 
 
 def main() -> None:
@@ -91,6 +97,8 @@ def main() -> None:
     print(f"   分镜:{'✓'+str(st['segments_planned'])+'段' if st['storyboard'] else '—'}"
           f" | AI片:{st['ai_clips']} | 实拍:{st['raw_clips']}"
           f" | 剪单:{'✓' if st['cutlist'] else '—'} | 预览:{st['previews']} | 成片:{st['finals']}")
+    if st.get("gen_cost_cny"):
+        print(f"   💰 本笔记生成花费 ≈ ¥{st['gen_cost_cny']}(gen_results 口径)")
     print(f"➡️  下一步: {st['next']}")
     if st["stall"]:
         print(f"⏰ {st['stall']}")

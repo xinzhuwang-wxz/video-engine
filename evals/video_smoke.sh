@@ -30,6 +30,20 @@ cat > "$TMP/sb.json" <<'EOF'
 EOF
 python3 "$VE/skills/video-storyboard/scripts/validate_storyboard.py" "$TMP/sb.json"
 
+# 2.7 交付承诺门(正:兑现 / 反:删段被拦)
+cat > "$TMP/sb_promise.json" <<'EOF2'
+{"total_duration":4,"segments":[{"seq":1,"duration":2,"subtitle":"冒烟字幕"},{"seq":2,"duration":2}]}
+EOF2
+python3 "$VE/scripts/promise_check.py" "$TMP/sb_promise.json" "$TMP/cutlist.json" >/dev/null 2>&1 && echo "✓ 承诺门正例通过"
+python3 - "$TMP" <<'EOF2'
+import json,sys,pathlib
+t=pathlib.Path(sys.argv[1]); cl=json.loads((t/"cutlist.json").read_text()); del cl["segments"][1]
+(t/"cutlist_broken.json").write_text(json.dumps(cl))
+EOF2
+if python3 "$VE/scripts/promise_check.py" "$TMP/sb_promise.json" "$TMP/cutlist_broken.json" >/dev/null 2>&1; then
+  echo "✗ 承诺门反例未拦截"; exit 1
+else echo "✓ 承诺门反例被拦"; fi
+
 # 3. seedance dry-run(离线构造请求体)
 cat > "$TMP/segs.json" <<'EOF'
 [{"seq":1,"prompt":"冒烟测试提示词","duration":5}]
