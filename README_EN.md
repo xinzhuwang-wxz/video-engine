@@ -1,48 +1,75 @@
-# video-engine · Agent-driven short-video production plugin
+<div align="center">
 
-**[中文](README.md)** | English
+# 🎬 video-engine
 
-<p align="center"><img src="assets/demo.gif" width="240" alt="15s aesthetic beat-cut demo — storyboard, previz and edit all agent-made"></p>
+**An agent that directs and edits — and every cut comes with a reason**
 
-> One idea (or a folder of raw footage) in → a fully-crafted JianYing/CapCut draft + rendered film out.
-> Humans only do three things: approve the storyboard, shoot, and confirm before publishing.
+Live-footage-first short-video production plugin: storyboard → AI reference clips → shoot against them → auditable editing → JianYing draft + finished film
 
-## Architecture: mature base + a decision layer on top
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Skills](https://img.shields.io/badge/Agent_Skills-open_standard-purple.svg)](https://github.com/anthropics/skills)
+[![Base](https://img.shields.io/badge/base-VectCutAPI-orange.svg)](https://github.com/sun-guannan/VectCutAPI)
 
-| Layer | What | Where it comes from |
-|---|---|---|
-| Decision | 3 **standalone capabilities** (storyboard / previz / editing — no fixed funnel: start from an idea, from raw footage, or anywhere in between; every prior is optional) + **cutlist contract** — every cut carries a written rationale | this repo |
-| Execution | [VectCutAPI](https://github.com/sun-guannan/VectCutAPI) (2k★): 362 transitions / 468 filters / keyframes / audio tracks, HTTP :9001 | cloned by `setup.sh` + `patches/` |
-| Generation | Seedance via Volcengine Ark (any model — swap with `SEEDANCE_MODEL`) | `scripts/seedance_gen.py` |
-| Front-end | JianYing (local, human review/export) or VectCut cloud preview (opt-in, your own OSS) | base engine |
+[中文](README.md) | **English**
 
-Key pieces the base doesn't have, which this repo adds:
+<img src="assets/demo.gif" width="240" alt="15s aesthetic beat-cut demo — storyboard, previz and edit all agent-made">
 
-- **Cutlist contract** (`cutlist.schema.json`) — the editing decision language: per-segment source/in/out/transition/rationale, plus global grade & BGM. Engine-agnostic.
-- **Self-review loop** — the agent renders a low-res preview, extracts frames, *looks at them* (multimodal), and revises its own cutlist (≤3 rounds).
-- **Beat alignment** — detects real energy onsets in the BGM and snaps cut points to them (theoretical BPM grids lie).
-- **Style whitelist** — machine-dumped enum list (`style-presets/enums.json`) so agents can never hallucinate a filter name, plus judgment rules (not hardcoded answers).
-- **Workspace discipline** — `assets/{SKU}/01-raw|02-AI|03-final|04-workbench/{NOTE}/` with an append-only manifest; presence *is* state, no timestamps needed.
+*↑ storyboard, previz and every editing decision of this 15s beat-cut were agent-made; a human nodded three times; cost ¥6*
 
-## Install (any SKILL.md-compatible agent)
+</div>
 
-```bash
-git clone https://github.com/xinzhuwang-wxz/video-engine.git && cd video-engine && bash setup.sh
+---
+
+## What is this
+
+Traditional flow: text script → shoot from imagination → an editor fishes through footage → endless rework. video-engine reshapes it:
+
+```
+📝 storyboard (human approves) → 🎞 AI reference clips ("a moving shooting standard")
+→ 📷 human shoots against them → ✂️ agent edits (every cut has a rationale, reviews its own work)
+→ 🎬 JianYing draft + finished film (human confirms before publishing)
 ```
 
-- **Claude Code**: `ln -s $PWD/skills/* ~/.claude/skills/` (or just open the repo)
-- **Codex**: works in-repo via `AGENT.md`, or drop skills into `~/.codex/skills`
-- **Hermes / OpenClaw / others**: symlink `skills/` into their skill directory
+**Core belief: AI-made edits must be reviewable, challengeable and reproducible.** Decisions live in a JSON artifact called the **cutlist** — not in magic.
 
-Config: put `ARK_API_KEY` in `.env` (only needed for generation; editing works without it).
-Start the engine: `cd vendor/CapCutAPI && .venv/bin/python capcut_server.py` (:9001).
+## ✨ Capabilities (standalone — no fixed funnel)
 
-## Hard rules
+| Skill | What it does | Minimum input |
+|---|---|---|
+| `video-storyboard` | professional storyboards (shot size/camera/voiceover/beat grid, claim-compliance + genericness gates) | one sentence of intent |
+| `video-previz` | per-segment AI reference clips (Seedance; any model via `SEEDANCE_MODEL`; cheap 480p) | one line per shot |
+| `video-editing` | cutlist → crafted JianYing draft (transitions/filters/keyframes/BGM/subtitles) + ffmpeg film | footage (even intent is optional) |
 
-Never auto-publish · raw footage is read-only · local-only by default (cloud preview is explicit opt-in) ·
-show the storyboard to a human before spending generation money · every editing decision carries a rationale ·
-label AI-generated content as required by the target platform.
+Start from an idea, from raw footage, or anywhere in between — every prior (storyboard, reference clips, naming convention) is optional: use it if present, degrade gracefully if not.
+
+## 🚦 Four quality gates
+
+storyboard gate (claims + genericness caught **before** money is spent) → asset probe (ffprobe every file) → **delivery-promise gate** (storyboard = promise, cutlist = delivery: coverage/duration/subtitle reconciliation + slideshow-risk hints) → self-review loop (agent renders a preview, extracts frames, *looks at them*, revises its own cutlist, ≤3 rounds).
+
+Real catches so far: a missed eye-contact frame, a transition attached to the wrong segment, copy-paste-generic prompts.
+
+## 🚀 Quick start
+
+```bash
+git clone https://github.com/xinzhuwang-wxz/video-engine.git && cd video-engine
+bash setup.sh   # clone base engine → apply patches → env → doctor → smoke
+make demo       # zero-key demo: full pipeline on test data in ~20s
+```
+
+Then talk to your agent: *"footage is in ~/Desktop/clips — cut a 15s vertical for TikTok, aesthetic, with traditional-style music"*.
+
+Editing works with **zero API keys**; generation needs `ARK_API_KEY` (Volcengine Ark). JianYing draft output needs `make server` (:9001).
+
+**Agents**: Claude Code (open the repo, or symlink `skills/*` into `~/.claude/skills/`) · Codex (`AGENT.md`/`CODEX.md`) · Hermes / OpenClaw (symlink skills). Manual: [`AGENT.md`](AGENT.md) · prompts: [`PROMPT_GALLERY.md`](PROMPT_GALLERY.md)
+
+## 🆚 vs OpenMontage
+
+[OpenMontage](https://github.com/calesthio/OpenMontage) (33k★, AGPL) is an excellent **generative** video production system and the inspiration for several mechanisms here (preflight, status board, delivery-promise gate, variation checking — all re-implemented from scratch, no code migrated). It is stronger at generative/explainer content, free-media retrieval and Remotion motion graphics; video-engine is stronger at auditable editing of real footage, the JianYing/CapCut ecosystem exit (human polish + licensed music + CN-platform specs), compliance red lines, Apache-2.0 licensing and light dependencies.
+
+## 🔒 Hard rules
+
+Never auto-publish · raw footage is read-only · local-only by default · show the storyboard to a human before spending generation money · every cut carries a rationale · label AI content as platforms require.
 
 ## License
 
-Apache-2.0 (same as the upstream base engine).
+[Apache-2.0](LICENSE) (same as the upstream base engine).
