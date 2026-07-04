@@ -11,7 +11,7 @@
 
 | Layer | What | Where it comes from |
 |---|---|---|
-| Decision | 3 skills (storyboard / previz / editing) + **cutlist contract** — every cut carries a written rationale, reviewable & reproducible | this repo |
+| Decision | 3 **standalone capabilities** (storyboard / previz / editing — no fixed funnel: start from an idea, from raw footage, or anywhere in between; every prior is optional) + **cutlist contract** — every cut carries a written rationale | this repo |
 | Execution | [VectCutAPI](https://github.com/sun-guannan/VectCutAPI) (2k★): 362 transitions / 468 filters / keyframes / audio tracks, HTTP :9001 | cloned by `setup.sh` + `patches/` |
 | Generation | Seedance via Volcengine Ark (any model — swap with `SEEDANCE_MODEL`) | `scripts/seedance_gen.py` |
 | Front-end | JianYing (local, human review/export) or VectCut cloud preview (opt-in, your own OSS) | base engine |
