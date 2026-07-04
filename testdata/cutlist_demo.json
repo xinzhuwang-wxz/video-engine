@@ -1,17 +1,38 @@
 {
-  "note_id": "_DEMO-VE-001",
-  "sku": "GY-TEST",
-  "canvas": {"width": 1080, "height": 1920},
-  "segments": [
-    {"seq": 1,
-     "main": {"file": "/Users/bamboo/Githubs/AI-marketing/video-engine/testdata/s01_shipai.mp4", "in": 1.0, "out": 3.0, "volume": 1.0},
-     "ai_ref": {"file": "/Users/bamboo/Githubs/AI-marketing/video-engine/testdata/s01_ai.mp4", "in": 0.0, "out": 2.0},
-     "subtitle": "第一段:上身全景",
-     "rationale": "取1-3s,起手整理衣襟动作最完整"},
-    {"seq": 2,
-     "main": {"file": "/Users/bamboo/Githubs/AI-marketing/video-engine/testdata/s01_ai.mp4", "in": 0.5, "out": 2.5, "speed": 1.0},
-     "ai_ref": null,
-     "subtitle": "第二段:AI片直接用(混剪演示)",
-     "rationale": "空镜段直接采用AI生成"}
-  ]
+ "note_id": "_DEMO-VE-001",
+ "sku": "GY-TEST",
+ "canvas": {
+  "width": 1080,
+  "height": 1920
+ },
+ "segments": [
+  {
+   "seq": 1,
+   "main": {
+    "file": "testdata/s01_shipai.mp4",
+    "in": 1.0,
+    "out": 3.0,
+    "volume": 1.0
+   },
+   "ai_ref": {
+    "file": "testdata/s01_ai.mp4",
+    "in": 0.0,
+    "out": 2.0
+   },
+   "subtitle": "第一段:上身全景",
+   "rationale": "取1-3s,起手整理衣襟动作最完整"
+  },
+  {
+   "seq": 2,
+   "main": {
+    "file": "testdata/s01_ai.mp4",
+    "in": 0.5,
+    "out": 2.5,
+    "speed": 1.0
+   },
+   "ai_ref": null,
+   "subtitle": "第二段:AI片直接用(混剪演示)",
+   "rationale": "空镜段直接采用AI生成"
+  }
+ ]
 }

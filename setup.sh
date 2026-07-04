@@ -10,5 +10,6 @@ echo "③ Python 环境…"
 (cd vendor/CapCutAPI && { command -v uv >/dev/null && uv venv .venv -q && uv pip install -q -r requirements.txt --python .venv/bin/python; } || { python3 -m venv .venv && .venv/bin/pip install -q -r requirements.txt; })
 [ -f vendor/CapCutAPI/config.json ] || sed 's/"draft_profile": "capcut_legacy"/"draft_profile": "jianying_pro_10"/' vendor/CapCutAPI/config.json.example > vendor/CapCutAPI/config.json 2>/dev/null || true
 [ -f .env ] || cp .env.example .env
-echo "④ 冒烟…"; bash evals/video_smoke.sh
+echo "④ 体检…"; python3 scripts/doctor.py || true
+echo "⑤ 冒烟…"; bash evals/video_smoke.sh
 echo "完成。起引擎服务: cd vendor/CapCutAPI && .venv/bin/python capcut_server.py  (:9001)"

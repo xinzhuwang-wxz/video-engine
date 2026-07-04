@@ -92,10 +92,14 @@ def main():
         print(("  ✓ S%02d 切点%.2fs → 吸附%.2fs (%+.2fs)" % (r["seq"], r["cut"], r["snap"], r["delta"]))
               if r.get("snap") else ("  · S%02d 切点%.2fs 不动(%s)" % (r["seq"], r["cut"], r.get("note", ""))),
               file=sys.stderr)
+    changed = sum(1 for r in report if r.get("snap") is not None)
     if args.write:
-        clp.with_suffix(".json.bak").write_text(clp.read_text())
-        clp.write_text(json.dumps(cutlist, ensure_ascii=False, indent=1))
-        print(str(clp))
+        if changed == 0:  # 无实际吸附不落盘:保持 mtime 稳定,production --resume 才能生效
+            print(f"(切点已全部在重音上,未改动文件) {clp}")
+        else:
+            clp.with_suffix(".json.bak").write_text(clp.read_text())
+            clp.write_text(json.dumps(cutlist, ensure_ascii=False, indent=1))
+            print(str(clp))
     else:
         print("(dry-run,--write 写回)")
 

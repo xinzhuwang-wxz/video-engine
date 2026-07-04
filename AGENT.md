@@ -49,7 +49,13 @@ git clone https://github.com/xinzhuwang-wxz/video-engine.git && cd video-engine 
 5. **决策必须留痕**:剪单每刀带 rationale;手艺名过 `style-presets/enums.json` 白名单;转场挂前段。
 6. AI 生成内容发布时按平台要求做 AI 声明(调用方职责,本插件在汇报中提醒)。
 
+## 常用命令(Makefile)
+
+`make doctor` 环境体检(开工前) · `make smoke` 回归(改动后必跑) · `make test` 单元测试 ·
+`make server` 起引擎 · `make produce CUTLIST=… OUT=… BGM=…` 一键出片 ·
+`python3 scripts/status.py <工作台目录>` 接手任何笔记先跑这个(有什么/缺什么/下一步/停滞检测)。
+
 ## 回归
 
-改动后必跑:`bash evals/video_smoke.sh`(零 API 零网络;引擎服务在跑时会额外覆盖物化断言)。
+改动后必跑:`make smoke`(零 API 零网络;引擎服务在跑时会额外覆盖物化断言)+ `make test`。
 vendor 升级流程见 `patches/README.md`。
