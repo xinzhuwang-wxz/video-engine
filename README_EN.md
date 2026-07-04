@@ -60,11 +60,7 @@ Then talk to your agent: *"footage is in ~/Desktop/clips — cut a 15s vertical 
 
 Editing works with **zero API keys**; generation needs `ARK_API_KEY` (Volcengine Ark). JianYing draft output needs `make server` (:9001).
 
-**Agents**: Claude Code (open the repo, or symlink `skills/*` into `~/.claude/skills/`) · Codex (`AGENT.md`/`CODEX.md`) · Hermes / OpenClaw (symlink skills). Manual: [`AGENT.md`](AGENT.md) · prompts: [`PROMPT_GALLERY.md`](PROMPT_GALLERY.md)
-
-## 🆚 vs OpenMontage
-
-[OpenMontage](https://github.com/calesthio/OpenMontage) (33k★, AGPL) is an excellent **generative** video production system and the inspiration for several mechanisms here (preflight, status board, delivery-promise gate, variation checking — all re-implemented from scratch, no code migrated). It is stronger at generative/explainer content, free-media retrieval and Remotion motion graphics; video-engine is stronger at auditable editing of real footage, the JianYing/CapCut ecosystem exit (human polish + licensed music + CN-platform specs), compliance red lines, Apache-2.0 licensing and light dependencies.
+**Agents**: tell any SKILL.md-compatible agent — *"clone https://github.com/xinzhuwang-wxz/video-engine and set it up per its AGENT.md"*. Prompts: [`PROMPT_GALLERY.md`](PROMPT_GALLERY.md)
 
 ## 🔒 Hard rules
 
