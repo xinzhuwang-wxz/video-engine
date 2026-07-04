@@ -168,3 +168,14 @@ class ResumeAndProbeTests(unittest.TestCase):
                 pass
         self.assertFalse([c for c in calls if any("render_cutlist" in str(x) for x in c)],
                          "resume 下不应调用 render_cutlist")
+
+
+class CliWiringTests(unittest.TestCase):
+    def test_options_from_cli_accepts_all_flags(self) -> None:
+        from video_engine.production import options_from_cli
+        opts = options_from_cli(
+            cutlist="c.json", out="o.mp4", bgm=None, duration=None, profile="douyin_vertical",
+            work_dir=None, manifest=None, beat_align=True, beat_tolerance=0.15,
+            burn_subtitles=True, soft_glow=True, beat_flash=True, write_review=True,
+            resume=True, probe_assets=False, promise_gate=False)
+        self.assertTrue(opts.resume); self.assertFalse(opts.probe_assets); self.assertFalse(opts.promise_gate)

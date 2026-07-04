@@ -211,12 +211,13 @@ def options_from_cli(
     manifest: str | None,
     beat_align: bool,
     beat_tolerance: float,
-    resume: bool = False,
-    probe_assets: bool = True,
     burn_subtitles: bool,
     soft_glow: bool,
     beat_flash: bool,
     write_review: bool,
+    resume: bool = False,
+    probe_assets: bool = True,
+    promise_gate: bool = True,
 ) -> ProductionOptions:
     return ProductionOptions(
         cutlist_path=Path(cutlist),
@@ -234,5 +235,6 @@ def options_from_cli(
         soft_glow=soft_glow,
         beat_flash=beat_flash,
         write_review=write_review,
+        promise_gate=promise_gate,
     )
 
